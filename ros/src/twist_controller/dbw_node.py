@@ -74,6 +74,7 @@ class DBWNode(object):
         self.desired_twist = None
         self.real_twist = None 
         self.dbw_enabled = None
+
         self.throttle = 0
         self.steering = 0
         self.brake = 0

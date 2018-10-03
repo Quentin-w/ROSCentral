@@ -1,4 +1,5 @@
 import rospy
+
 from yaw_controller import YawController
 from pid import PID
 from lowpass import LowPassFilter
@@ -27,10 +28,10 @@ class Controller(object):
         self.accel_limit = accel_limit
         self.wheel_radius = wheel_radius
 
-	# Using PID to control throttle and brake
+	      # Using PID to control throttle and brake
         self.throttle_controller = PID(VEL_KP, VEL_KI, VEL_KD, mn=0, mx=1)
-	self.brake_controller = PID(BR_KP, BR_KI, BR_KD, mn=0, mx=1)
-	self.lp_filter = LowPassFilter(0.2, 1)
+	      self.brake_controller = PID(BR_KP, BR_KI, BR_KD, mn=0, mx=1)
+	      self.lp_filter = LowPassFilter(0.2, 1)
 
         # Control the steer: PID or YawController?
         # self.steer_controller = PID(
@@ -53,10 +54,10 @@ class Controller(object):
         # Return throttle, brake, steer
         if not dbw_enabled:
             self.throttle_controller.reset()
-	    self.brake_controller.reset()
+	          self.brake_controller.reset()
             return 0., 0., 0.
 
-	# Time
+	      # Time
         current_time = rospy.get_time()
         sample_time = current_time-self.last_time
         self.last_time = current_time
@@ -70,8 +71,8 @@ class Controller(object):
         vel_error = vel_desired - vel_real
         ang_error = ang_desired - ang_real
 
-	throttle = self.throttle_controller.step(vel_error, sample_time)
-	brake = self.brake_controller.step(-vel_error, sample_time)
+	      throttle = self.throttle_controller.step(vel_error, sample_time)
+	      brake = self.brake_controller.step(-vel_error, sample_time)
 
         #if vel_desired == 0 and vel_real < 0.05:  # Stop
         #    self.throttle_controller.reset()
@@ -92,10 +93,10 @@ class Controller(object):
 
         steering = self.yaw_controller.get_steering(
             vel_desired, ang_desired, vel_real)
-	steering = self.lp_filter.filt(steering)
+	      steering = self.lp_filter.filt(steering)
 
-	rospy.loginfo('linear: %s, current: %s, error: %s', vel_desired, vel_real, vel_error)
-	rospy.loginfo('angular: %s, current: %s, error: %s', ang_desired, ang_real, ang_error)
-	rospy.loginfo('throttle: %s, brake: %s, steer: %s', throttle, brake, steering)
+	      rospy.loginfo('linear: %s, current: %s, error: %s', vel_desired, vel_real, vel_error)
+	      rospy.loginfo('angular: %s, current: %s, error: %s', ang_desired, ang_real, ang_error)
+	      rospy.loginfo('throttle: %s, brake: %s, steer: %s', throttle, brake, steering)
 
         return throttle, brake, steering
