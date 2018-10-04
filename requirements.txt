@@ -1,0 +1,17 @@
+Flask==0.11.1
+attrdict==2.0.0
+eventlet==0.19.0
+python-socketio==1.6.1
+numpy==1.13.1
+Pillow==2.2.1
+<<<<<<< 4aae87d8a3a87e74b44f15d3a9d2bce093a6c941
+scipy==0.13.3
+keras==1.2.0
+tensorflow==1.0.0
+h5py==2.6.0
+=======
+scipy==0.19.1
+keras==2.0.8
+tensorflow==1.3.0
+h5py==2.6.0
+>>>>>>> increase required version of TF, keras, and scipy
