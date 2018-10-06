@@ -98,8 +98,8 @@ public:
     , initial_velocity_(5.0)
     , lookahead_distance_calc_ratio_(2.0)
     , minimum_lookahead_distance_(6.0)
-    , displacement_threshold_(0.2)
-    , relative_angle_threshold_(5.)
+    , displacement_threshold_(0.1) // Original: 0.2. Change the value to get a more frequent check of waypoint following
+    , relative_angle_threshold_(1.) // Original: 5. Change the value to get a more frequent check of waypoint following
     , waypoint_set_(false)
     , pose_set_(false)
     , velocity_set_(false)
