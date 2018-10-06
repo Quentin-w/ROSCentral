@@ -370,7 +370,7 @@ geometry_msgs::TwistStamped PurePursuit::go()
     ROS_WARN("lost next waypoint");
     return outputZero();
   }
-  //ROS_ERROR_STREAM("next waypoint = " <<  num_of_next_waypoint_);
+  ROS_ERROR_STREAM("next waypoint = " <<  num_of_next_waypoint_);
 
   // if g_linear_interpolate_mode is false or next waypoint is first or last
   if (!linear_interpolate_ || num_of_next_waypoint_ == 0 ||
@@ -388,17 +388,18 @@ geometry_msgs::TwistStamped PurePursuit::go()
     ROS_ERROR_STREAM("lost target! ");
     return outputZero();
   }
-
-  // ROS_INFO("next_target : ( %lf , %lf , %lf)", next_target.x, next_target.y,next_target.z);
+ 
+  // geometry_msgs::TwistStamped the_twist;
+  // the_twist = outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)))
+  // ROS_INFO("next_target : ( %lf , %lf , %lf)", position_of_next_target_.x, position_of_next_target_.y);
+  // ROS_INFO("linear : %lf, angular : %lf", the_twist.twist.linear.x, the_twist.twist.angular.z);
 
   return outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)));
 
-// ROS_INFO("linear : %lf, angular : %lf",twist.twist.linear.x,twist.twist.angular.z);
-
 #ifdef LOG
   std::ofstream ofs("/tmp/pure_pursuit.log", std::ios::app);
-  ofs << _current_waypoints.getWaypointPosition(next_waypoint).x << " "
-      << _current_waypoints.getWaypointPosition(next_waypoint).y << " " << next_target.x << " " << next_target.y
+  ofs << current_waypoints_.getWaypointPosition(next_waypoint).x << " "
+      << current_waypoints_.getWaypointPosition(next_waypoint).y << " " << next_target.x << " " << next_target.y
       << std::endl;
 #endif
 }
