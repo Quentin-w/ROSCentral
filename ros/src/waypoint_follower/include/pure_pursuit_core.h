@@ -79,7 +79,7 @@ private:
 
   double getCmdVelocity(int waypoint) const;
   void calcLookaheadDistance(int waypoint);
-  double calcCurvature(geometry_msgs::Point target) const;
+  double calcCurvature(int num_of_next_waypoint_, geometry_msgs::Point target) const;
   double calcRadius(geometry_msgs::Point target) const;
   bool interpolateNextTarget(int next_waypoint, geometry_msgs::Point *next_target) const;
   bool verifyFollowing() const;
