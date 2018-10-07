@@ -11,6 +11,7 @@ from scipy.spatial import KDTree
 import tf
 import cv2
 import yaml
+from scipy.spatial import KDTree
 
 STATE_COUNT_THRESHOLD = 3
 
@@ -54,6 +55,10 @@ class TLDetector(object):
         self.last_wp = -1
         self.state_count = 0
         self.waypoints_2d = None
+
+        self.waypoints_2d = None
+        self.waypoint_tree = None
+
 
         rospy.spin()
 
@@ -155,6 +160,7 @@ class TLDetector(object):
                 # Get stop line waypoint index
                 line = stop_line_positions[i]
                 temp_wp_idx = self.get_closest_waypoint(line[0], line[1])
+
                 # Find closest stop line waypoint index
                 d = temp_wp_idx - car_wp_idx
                 if d >= 0 and d < diff:

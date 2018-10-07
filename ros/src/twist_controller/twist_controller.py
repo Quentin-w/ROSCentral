@@ -11,6 +11,7 @@ from lowpass import LowPassFilter
 
 GAS_DENSITY = 2.858
 ONE_MPH = 0.44704
+MIN_VELOCITY = 0.1
 
 
 class Controller(object):
@@ -53,7 +54,6 @@ class Controller(object):
             self.throttle_controller.reset()
             return 0., 0., 0.
 
-        # Time
         current_time = rospy.get_time()
         sample_time = current_time - self.last_time
         self.last_time = current_time

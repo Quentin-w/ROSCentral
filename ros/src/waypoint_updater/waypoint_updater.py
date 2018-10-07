@@ -33,6 +33,7 @@ UPDATE_RATE = 10
 
 class WaypointUpdater(object):
     def __init__(self):
+        # initialise this node
         rospy.init_node('waypoint_updater')
 
         self.pose = None
