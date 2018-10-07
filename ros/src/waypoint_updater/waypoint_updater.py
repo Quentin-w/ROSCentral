@@ -24,7 +24,11 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 200  # Number of waypoints we will publish. You can change this number
+# The LOOKAHEAD_WPS should not be too large, otherwise the waypoint update will experience a large latency.
+# According to my experiment in online workspace it could be set to a value that no larger than 100
+# - Fengyu
+LOOKAHEAD_WPS = 75  # Number of waypoints we will publish. You can change this number
+
 MAX_DECEL = .5
 
 class WaypointUpdater(object):
