@@ -29,6 +29,7 @@ TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 # - Fengyu
 LOOKAHEAD_WPS = 75  # Number of waypoints we will publish. You can change this number
 MAX_DECEL = .5
+UPDATE_RATE = 10
 
 class WaypointUpdater(object):
     def __init__(self):
@@ -47,7 +48,7 @@ class WaypointUpdater(object):
         self.final_waypoints_pub = rospy.Publisher(
             'final_waypoints', Lane, queue_size=1)
 
-        rate = rospy.Rate(50)
+        rate = rospy.Rate(UPDATE_RATE)
         while not rospy.is_shutdown():
             if self.pose and self.base_lane:
                 self.publish_waypoints()
@@ -88,6 +89,9 @@ class WaypointUpdater(object):
         else:
             lane.waypoints = self.decelerate_waypoints(
                 base_waypoints, closest_idx)
+
+        rospy.logwarn('stopline_wp_idx %s', self.stopline_wp_idx)
+        
         return lane
 
     def decelerate_waypoints(self, waypoints, closest_idx):

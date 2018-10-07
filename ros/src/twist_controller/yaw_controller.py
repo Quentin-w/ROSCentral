@@ -12,7 +12,7 @@ class YawController(object):
 
         # This is for church lot test
         # If the velocity is smaller than this value, the rule of steering does not apply
-        self.min_steer_rule_vel = 5 
+        # self.min_steer_rule_vel = 5 
         # self.ratio_currentvel_desiredvel = 0.8
 
     def get_angle(self, radius):
@@ -23,11 +23,11 @@ class YawController(object):
         # When the real velocity is low and the desired linear velocity is large,
         # we should ensure that a large steering value can be reached.
         # For example in the church lot test
-        if current_velocity < self.min_steer_rule_vel:
-            nominator = self.min_steer_rule_vel
-        else:
-            nominator = current_velocity 
-            
+        # if current_velocity < self.min_steer_rule_vel:
+        #     nominator = self.min_steer_rule_vel
+        # else:
+        #     nominator = current_velocity 
+        nominator = current_velocity    
         angular_velocity = nominator * angular_velocity / linear_velocity if abs(linear_velocity) > 0. else 0.
 
         if abs(current_velocity) > 0.1:

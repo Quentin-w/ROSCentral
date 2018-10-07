@@ -22,8 +22,8 @@ class Controller(object):
 
         self.THROTTLE_DECEL = 0.5/update_rate
 
-        kp = 5 * 1./update_rate # Should be very small, otherwise the accel limit will be exceeded suddenly
-        ki = 0.5 * 1./update_rate
+        kp = 2 * 1./update_rate # Should be very small, otherwise the accel limit will be exceeded suddenly
+        ki = 0.2 * 1./update_rate
         kd = 0.0 * 1./update_rate
         mn = 0.
         mx = 1.
