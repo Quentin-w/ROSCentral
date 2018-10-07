@@ -22,16 +22,18 @@ class Controller(object):
 
         self.THROTTLE_DECEL = 0.5/update_rate
 
-        kp = 1 * 1./update_rate # Should be very small, otherwise the accel limit will be exceeded suddenly
-        ki = 0.1 * 1./update_rate
-        kd = 0.05 * 1./update_rate
+        kp = 5 * 1./update_rate # Should be very small, otherwise the accel limit will be exceeded suddenly
+        ki = 0.5 * 1./update_rate
+        kd = 0.0 * 1./update_rate
         mn = 0.
         mx = 1.
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
 
-        tau = 0.5
+        tau1 = 0.5
+        tau2 = 0.5
         ts = 1./update_rate
-        self.vel_lpf = LowPassFilter(tau, ts)
+        self.vel_lpf = LowPassFilter(tau1, ts)
+        self.steer_lpf = LowPassFilter(tau2, ts)
 
         self.vehicle_mass = vehicle_mass+fuel_capacity*GAS_DENSITY
         self.fuel_capacity = fuel_capacity
@@ -70,7 +72,7 @@ class Controller(object):
             brake = 700.  # 700 on Carla  # The torque to chill Carla
         elif throttle < 0.1 and vel_error < 0:  # Brake
             throttle = 0.
-            decel = max(vel_error, self.decel_limit) # Use the maximal possible deceleration
+            decel = max(vel_error, self.decel_limit) # Use the minimal possible deceleration
             brake = abs(decel) * self.vehicle_mass * self.wheel_radius
             brake = max(brake, self.brake_deadband)
         elif current_accel>self.accel_limit: # Accel exceeds the maximum accel
@@ -83,11 +85,12 @@ class Controller(object):
         # Steer
         steering = self.yaw_controller.get_steering(
             linear_vel, angular_vel, current_vel)
+        steering = self.steer_lpf.filt(steering)
 
-        rospy.loginfo('linear: %s, current: %s, error: %s',
+        rospy.logwarn('linear: %s, current: %s, error: %s',
                       linear_vel, current_vel, vel_error)
-        rospy.loginfo('angular: %s', angular_vel)
-        rospy.loginfo('throttle: %s, brake: %s, steer: %s',
+        rospy.logwarn('angular: %s', angular_vel)
+        rospy.logwarn('throttle: %s, brake: %s, steer: %s',
                       throttle, brake, steering)
                       
         return throttle, brake, steering
