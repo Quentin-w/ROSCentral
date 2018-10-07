@@ -11,25 +11,26 @@ from lowpass import LowPassFilter
 
 GAS_DENSITY = 2.858
 ONE_MPH = 0.44704
+THROTTLE_DECEL = 0.01
 
 
 class Controller(object):
     def __init__(self, vehicle_mass, fuel_capacity, brake_deadband, decel_limit,
-                 accel_limit, wheel_radius, wheel_base, steer_ratio, max_lat_accel, max_steer_angle):
+                 accel_limit, wheel_radius, wheel_base, steer_ratio, max_lat_accel, max_steer_angle, update_rate):
         # TODO: Implement
         min_speed = 0.1
         self.yaw_controller = YawController(
             wheel_base, steer_ratio, min_speed, max_lat_accel, max_steer_angle)
 
-        kp = 0.3
-        ki = 0.1
-        kd = 0
-        mn = 0
-        mx = 1
+        kp = 1 * 1./update_rate # Should be very small, otherwise the accel limit will be exceeded suddenly
+        ki = 0.2 * 1./update_rate
+        kd = 0.1 * 1./update_rate
+        mn = 0.
+        mx = 1.
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
 
         tau = 0.5
-        ts = 0.02
+        ts = 1./update_rate
         self.vel_lpf = LowPassFilter(tau, ts)
 
         self.vehicle_mass = vehicle_mass+fuel_capacity*GAS_DENSITY
@@ -38,9 +39,11 @@ class Controller(object):
         self.decel_limit = decel_limit
         self.accel_limit = accel_limit
         self.wheel_radius = wheel_radius
+        self.update_rate = update_rate
 
         self.last_time = rospy.get_time()
-        self.last_vel = 0
+        self.last_vel = 0.
+        self.last_throttle = 0.
 
     def control(self, current_vel, linear_vel, angular_vel, dbw_enabled):
         # TODO: Change the arg, kwarg list to suit your needs
@@ -49,28 +52,38 @@ class Controller(object):
             self.throttle_controller.reset()
             return 0., 0., 0.
 
-        current_vel = self.vel_lpf.filt(current_vel)
-
-        steering = self.yaw_controller.get_steering(
-            linear_vel, angular_vel, current_vel)
-
-        vel_error = linear_vel - current_vel
-        self.last_vel = current_vel
-
+        # Time
         current_time = rospy.get_time()
         sample_time = current_time - self.last_time
         self.last_time = current_time
 
-        throttle = self.throttle_controller.step(vel_error, sample_time)
-        brake = 0
+        # Velocity
+        current_vel = self.vel_lpf.filt(current_vel)
+        vel_error = linear_vel - current_vel
 
-        if linear_vel == 0 and current_time < 0.1:  # Stop
-            throttle = 0
-            brake = 700  # 700 on Carla  # The torque to chill Carla
+        # throttle and brake should not be positive at the same time
+        throttle = self.throttle_controller.step(vel_error, sample_time)
+        brake = 0.
+        current_accel = self.update_rate*(current_vel -  self.last_vel)
+
+        if linear_vel == 0 and vel_error < 0.1:  # Stop
+            throttle = 0.
+            brake = 700.  # 700 on Carla  # The torque to chill Carla
         elif throttle < 0.1 and vel_error < 0:  # Brake
-            throttle = 0
-            decel = max(vel_error, self.decel_limit)
+            throttle = 0.
+            decel = max(vel_error, self.decel_limit) # Use the maximal possible deceleration
             brake = abs(decel) * self.vehicle_mass * self.wheel_radius
+            brake = max(brake, self.brake_deadband)
+        elif current_accel>self.accel_limit: # Accel exceeds the maximum accel
+            throttle = self.last_throttle - THROTTLE_DECEL
+            throttle = max(throttle, 0) # Prevent the throttle from being negative
+
+        self.last_vel = current_vel
+        self.last_throttle = throttle
+
+        # Steer
+        steering = self.yaw_controller.get_steering(
+            linear_vel, angular_vel, current_vel)
 
         rospy.loginfo('linear: %s, current: %s, error: %s',
                       linear_vel, current_vel, vel_error)

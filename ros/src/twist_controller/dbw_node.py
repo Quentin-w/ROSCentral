@@ -54,6 +54,14 @@ class DBWNode(object):
         self.brake_pub = rospy.Publisher('/vehicle/brake_cmd',
                                          BrakeCmd, queue_size=1)
 
+        self.current_vel = None
+        self.current_ang_vel = None
+        self.dbw_enabled = None
+        self.linear_vel = None
+        self.angular_vel = None
+
+        self.rate = 50
+
         # TODO: Create `Controller` object
         self.controller = Controller(vehicle_mass=vehicle_mass,
                                      fuel_capacity=fuel_capacity,
@@ -64,36 +72,29 @@ class DBWNode(object):
                                      wheel_base=wheel_base,
                                      steer_ratio=steer_ratio,
                                      max_lat_accel=max_lat_accel,
-                                     max_steer_angle=max_steer_angle)
+                                     max_steer_angle=max_steer_angle,
+                                     update_rate=self.rate)
 
         # TODO: Subscribe to all the topics you need to
         rospy.Subscriber('/vehicle/dbw_enabled', Bool, self.dbw_enabled_cb)
-        rospy.Subscriber('/twist_cmd', TwistStamped, self.twist_cb, queue_size=1)
-        rospy.Subscriber('/current_velocity', TwistStamped, self.velocity_cb, queue_size=1)
-
-        self.current_vel = None
-        self.current_ang_vel = None
-        self.dbw_enabled = None
-        self.linear_vel = None
-        self.angular_vel = None
-
-        self.throttle = 0
-        self.steering = 0
-        self.brake = 0
+        rospy.Subscriber('/twist_cmd', TwistStamped,
+                         self.twist_cb, queue_size=1)
+        rospy.Subscriber('/current_velocity', TwistStamped,
+                         self.velocity_cb, queue_size=1)
 
         self.loop()
 
     def loop(self):
-        rate = rospy.Rate(50)  # 50Hz
+        rate = rospy.Rate(self.rate)  # 50Hz
         while not rospy.is_shutdown():
             # TODO: Get predicted throttle, brake, and steering using `twist_controller`
             if not None in (self.current_vel, self.linear_vel, self.angular_vel):
-                self.throttle, self.brake, self.steering = self.controller.control(self.current_vel,
-                                                                                   self.linear_vel,
-                                                                                   self.angular_vel,
-                                                                                   self.dbw_enabled)
+                throttle, brake, steering = self.controller.control(self.current_vel,
+                                                                    self.linear_vel,
+                                                                    self.angular_vel,
+                                                                    self.dbw_enabled)
             if self.dbw_enabled:
-                self.publish(self.throttle, self.brake, self.steering)
+                self.publish(throttle, brake, steering)
             rate.sleep()
 
     def dbw_enabled_cb(self, msg):
