@@ -11,20 +11,20 @@ from lowpass import LowPassFilter
 
 GAS_DENSITY = 2.858
 ONE_MPH = 0.44704
-THROTTLE_DECEL = 0.01
 
 
 class Controller(object):
     def __init__(self, vehicle_mass, fuel_capacity, brake_deadband, decel_limit,
                  accel_limit, wheel_radius, wheel_base, steer_ratio, max_lat_accel, max_steer_angle, update_rate):
-        # TODO: Implement
         min_speed = 0.1
         self.yaw_controller = YawController(
             wheel_base, steer_ratio, min_speed, max_lat_accel, max_steer_angle)
 
+        self.THROTTLE_DECEL = 0.5/update_rate
+
         kp = 1 * 1./update_rate # Should be very small, otherwise the accel limit will be exceeded suddenly
-        ki = 0.2 * 1./update_rate
-        kd = 0.1 * 1./update_rate
+        ki = 0.1 * 1./update_rate
+        kd = 0.05 * 1./update_rate
         mn = 0.
         mx = 1.
         self.throttle_controller = PID(kp, ki, kd, mn, mx)
@@ -46,7 +46,6 @@ class Controller(object):
         self.last_throttle = 0.
 
     def control(self, current_vel, linear_vel, angular_vel, dbw_enabled):
-        # TODO: Change the arg, kwarg list to suit your needs
         # Return throttle, brake, steer
         if not dbw_enabled:
             self.throttle_controller.reset()
@@ -75,7 +74,7 @@ class Controller(object):
             brake = abs(decel) * self.vehicle_mass * self.wheel_radius
             brake = max(brake, self.brake_deadband)
         elif current_accel>self.accel_limit: # Accel exceeds the maximum accel
-            throttle = self.last_throttle - THROTTLE_DECEL
+            throttle = self.last_throttle - self.THROTTLE_DECEL
             throttle = max(throttle, 0) # Prevent the throttle from being negative
 
         self.last_vel = current_vel

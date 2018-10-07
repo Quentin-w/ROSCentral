@@ -5,6 +5,7 @@
 
     <!--DBW Node -->
     <include file="$(find twist_controller)/launch/dbw_sim.launch"/>
+    <!--include file="$(find twist_controller)/launch/dbw_test.launch"/-->
 
     <!--Waypoint Loader -->
     <include file="$(find waypoint_loader)/launch/waypoint_loader.launch"/>

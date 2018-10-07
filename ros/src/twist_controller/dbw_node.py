@@ -60,9 +60,10 @@ class DBWNode(object):
         self.linear_vel = None
         self.angular_vel = None
 
+        self.throttle = self.brake = self.steering = 0.
+
         self.rate = 50
 
-        # TODO: Create `Controller` object
         self.controller = Controller(vehicle_mass=vehicle_mass,
                                      fuel_capacity=fuel_capacity,
                                      brake_deadband=brake_deadband,
@@ -75,7 +76,6 @@ class DBWNode(object):
                                      max_steer_angle=max_steer_angle,
                                      update_rate=self.rate)
 
-        # TODO: Subscribe to all the topics you need to
         rospy.Subscriber('/vehicle/dbw_enabled', Bool, self.dbw_enabled_cb)
         rospy.Subscriber('/twist_cmd', TwistStamped,
                          self.twist_cb, queue_size=1)
@@ -87,14 +87,13 @@ class DBWNode(object):
     def loop(self):
         rate = rospy.Rate(self.rate)  # 50Hz
         while not rospy.is_shutdown():
-            # TODO: Get predicted throttle, brake, and steering using `twist_controller`
             if not None in (self.current_vel, self.linear_vel, self.angular_vel):
-                throttle, brake, steering = self.controller.control(self.current_vel,
-                                                                    self.linear_vel,
-                                                                    self.angular_vel,
-                                                                    self.dbw_enabled)
+                self.throttle, self.brake, self.steering = self.controller.control(self.current_vel,
+                                                                                   self.linear_vel,
+                                                                                   self.angular_vel,
+                                                                                   self.dbw_enabled)
             if self.dbw_enabled:
-                self.publish(throttle, brake, steering)
+                self.publish(self.throttle, self.brake, self.steering)
             rate.sleep()
 
     def dbw_enabled_cb(self, msg):
