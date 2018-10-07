@@ -70,7 +70,7 @@ double PurePursuit::getCmdVelocity(int waypoint) const
 void PurePursuit::calcLookaheadDistance(int waypoint)
 {
   double current_velocity_mps = current_velocity_.twist.linear.x;
-  double maximum_lookahead_distance =  current_velocity_mps * 10; // Vehicle position after 10 s
+  double maximum_lookahead_distance =  current_velocity_mps * 10;
   double ld = current_velocity_mps * lookahead_distance_calc_ratio_;
 
   lookahead_distance_ = ld < minimum_lookahead_distance_ ? minimum_lookahead_distance_
@@ -82,62 +82,18 @@ void PurePursuit::calcLookaheadDistance(int waypoint)
   return ;
 }
 
-double PurePursuit::calcCurvature(int num_of_next_waypoint_, geometry_msgs::Point target) const
+double PurePursuit::calcCurvature(geometry_msgs::Point target) const
 {
   double kappa;
   double denominator = pow(getPlaneDistance(target, current_pose_.pose.position), 2);
-  double numerator = 2 * calcRelativeCoordinate(target, current_pose_.pose).y; 
+  double numerator = 2 * calcRelativeCoordinate(target, current_pose_.pose).y;
 
-  if (denominator != 0 && !current_waypoints_.isEmpty())
-  {
-    // -------------- Calculate the curvature ------------------
-    // calculate the linear equation of num_of_next_waypoint_
-    geometry_msgs::Point end = current_waypoints_.getWaypointPosition(num_of_next_waypoint_); //beyound lookahead_distance_
-    geometry_msgs::Point start = current_waypoints_.getWaypointPosition(num_of_next_waypoint_ - 1); // inside lookahead_distance_
-    // let the linear equation be "ax + by + c = 0"
-    // if there are two points (x1,y1) , (x2,y2), a = "y2-y1, b = "(-1) * x2 - x1" ,c = "(-1) * (y2-y1)x1 + (x2-x1)y1"
-    double a1 = 0;
-    double b1 = 0;
-    double c1 = 0;
-    double get_linear_flag1 = getLinearEquation(start, end, &a1, &b1, &c1);
-
-    geometry_msgs::Point next = current_waypoints_.getWaypointPosition(0); //next point
-    geometry_msgs::Point current = current_pose_.pose.position; // current point
-    double a2 = 0;
-    double b2 = 0;
-    double c2 = 0;
-    double get_linear_flag2 = getLinearEquation(current, next, &a2, &b2, &c2);
-    
-    if (!get_linear_flag1 || !get_linear_flag2 || a1*b2==a2*b1) // Parallel
-      kappa = numerator / denominator; // TODO: Maybe we need a better formular? curvature = 1 / r, r is the radius of curve    
-    else //Calculate r
-    {
-      // Calculate the perpendicular line of a, b, c at the target point
-      // New line: a1*y - b1*x -(a1*y1 - b1*x1) = 0
-      double x1 = target.x;
-      double y1 = target.y;
-      b1 = -b1;
-      double c1 = -(a1*y1 - b1*x1);
-      // Calculate the perpendicular line of a, b, c at the target point
-      // New line: a2*y - b2*x -(a2*y2 - b2*x2) = 0
-      double x2 = current.x;
-      double y2 = current.y;
-      b2 = -b2;
-      double c2 = -(a2*y2 - b2*x2);
-      // Cross point
-      geometry_msgs::Point cp;
-      cp.x = - (c1/a1 - c2/a2)/(b1/a1 - b2/a2);
-      cp.y = (c1*b2 - c2*b1)/(b1 - b2);
-      cp.z = 0;
-
-      kappa = 1 / getPlaneDistance(cp, current_pose_.pose.position);
-      // -----------------------------------------------------------
-    }
-  }
+  if (denominator != 0)
+    kappa = numerator / denominator;
   else
   {
     if(numerator > 0)
-      kappa = KAPPA_MIN_; 
+     kappa = KAPPA_MIN_;
     else
       kappa = -KAPPA_MIN_;
   }
@@ -146,21 +102,20 @@ double PurePursuit::calcCurvature(int num_of_next_waypoint_, geometry_msgs::Poin
 }
 
 // linear interpolation of next target
-// It seems the next_waypoint and next_target refer to the same/similar place...
 bool PurePursuit::interpolateNextTarget(int next_waypoint, geometry_msgs::Point *next_target) const
 {
   constexpr double ERROR = pow(10, -5);  // 0.00001
 
   int path_size = static_cast<int>(current_waypoints_.getSize());
-  if (next_waypoint == path_size - 1) // next_waypoint (num_of_next_waypoint_) is the last one  
+  if (next_waypoint == path_size - 1)
   {
     *next_target = current_waypoints_.getWaypointPosition(next_waypoint);
     return true;
   }
-  double search_radius = lookahead_distance_; // Closer than the next_waypoint
+  double search_radius = lookahead_distance_;
   geometry_msgs::Point zero_p;
-  geometry_msgs::Point end = current_waypoints_.getWaypointPosition(next_waypoint); //beyound lookahead_distance_
-  geometry_msgs::Point start = current_waypoints_.getWaypointPosition(next_waypoint - 1); // inside lookahead_distance_
+  geometry_msgs::Point end = current_waypoints_.getWaypointPosition(next_waypoint);
+  geometry_msgs::Point start = current_waypoints_.getWaypointPosition(next_waypoint - 1);
 
   // let the linear equation be "ax + by + c = 0"
   // if there are two points (x1,y1) , (x2,y2), a = "y2-y1, b = "(-1) * x2 - x1" ,c = "(-1) * (y2-y1)x1 + (x2-x1)y1"
@@ -192,7 +147,7 @@ bool PurePursuit::interpolateNextTarget(int next_waypoint, geometry_msgs::Point 
 
   // normal unit vectors of v
   tf::Vector3 unit_w1 = rotateUnitVector(unit_v, 90);   // rotate to counter clockwise 90 degree
-  tf::Vector3 unit_w2 = rotateUnitVector(unit_v, -90);  // rotate to counter clockwise -90 degree
+  tf::Vector3 unit_w2 = rotateUnitVector(unit_v, -90);  // rotate to counter clockwise 90 degree
 
   // the foot of a perpendicular line
   geometry_msgs::Point h1;
@@ -227,7 +182,7 @@ bool PurePursuit::interpolateNextTarget(int next_waypoint, geometry_msgs::Point 
   }
 
   // get intersection[s]
-  // if there is an intersection, i.e. target right in the straight line
+  // if there is a intersection
   if (d == search_radius)
   {
     *next_target = h;
@@ -304,8 +259,8 @@ geometry_msgs::Twist PurePursuit::calcTwist(double curvature, double cmd_velocit
   twist.linear.x = cmd_velocity;
   if (!following_flag)
   {
-    ROS_ERROR_STREAM("Not following");
-    twist.angular.z = current_velocity_.twist.linear.x * curvature; // TODO: is this function correct?
+    //ROS_ERROR_STREAM("Not following");
+    twist.angular.z = current_velocity_.twist.linear.x * curvature;
   }
   else
   {
@@ -340,9 +295,9 @@ void PurePursuit::getNextWaypoint()
 
     // if there exists an effective waypoint
     if (getPlaneDistance(current_waypoints_.getWaypointPosition(i), current_pose_.pose.position) > lookahead_distance_)
-    { // In this case, the waypoint i is the exact one that further than lookahead_distance_
+    {
       num_of_next_waypoint_ = i;
-      ROS_ERROR_STREAM("wp = " << i << " dist = " << getPlaneDistance(current_waypoints_.getWaypointPosition(i), current_pose_.pose.position) );
+      //ROS_ERROR_STREAM("wp = " << i << " dist = " << getPlaneDistance(current_waypoints_.getWaypointPosition(i), current_pose_.pose.position) );
       return;
     }
   }
@@ -372,7 +327,7 @@ geometry_msgs::TwistStamped PurePursuit::outputTwist(geometry_msgs::Twist t) con
   double v = t.linear.x;
   double omega = t.angular.z;
 
-  if(fabs(omega) < ERROR){ // In this case the vehicle should driving a straight line
+  if(fabs(omega) < ERROR){
 
     return twist;
   }
@@ -407,7 +362,7 @@ geometry_msgs::TwistStamped PurePursuit::go()
 
   bool interpolate_flag = false;
 
-  calcLookaheadDistance(1); // TODO: This function should be corrected. The input plays no role here.
+  calcLookaheadDistance(1);
   // search next waypoint
   getNextWaypoint();
   if (num_of_next_waypoint_ == -1)
@@ -415,14 +370,14 @@ geometry_msgs::TwistStamped PurePursuit::go()
     ROS_WARN("lost next waypoint");
     return outputZero();
   }
-  ROS_ERROR_STREAM("next waypoint = " <<  num_of_next_waypoint_);
+  //ROS_ERROR_STREAM("next waypoint = " <<  num_of_next_waypoint_);
 
   // if g_linear_interpolate_mode is false or next waypoint is first or last
   if (!linear_interpolate_ || num_of_next_waypoint_ == 0 ||
       num_of_next_waypoint_ == (static_cast<int>(current_waypoints_.getSize() - 1)))
   {
     position_of_next_target_ = current_waypoints_.getWaypointPosition(num_of_next_waypoint_);
-    return outputTwist(calcTwist(calcCurvature(num_of_next_waypoint_, position_of_next_target_), getCmdVelocity(0)));
+    return outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)));
   }
 
   // linear interpolation and calculate angular velocity
@@ -433,18 +388,17 @@ geometry_msgs::TwistStamped PurePursuit::go()
     ROS_ERROR_STREAM("lost target! ");
     return outputZero();
   }
- 
-  // geometry_msgs::TwistStamped the_twist;
-  // the_twist = outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)))
-  // ROS_INFO("next_target : ( %lf , %lf , %lf)", position_of_next_target_.x, position_of_next_target_.y);
-  // ROS_INFO("linear : %lf, angular : %lf", the_twist.twist.linear.x, the_twist.twist.angular.z);
 
-  return outputTwist(calcTwist(calcCurvature(num_of_next_waypoint_, position_of_next_target_), getCmdVelocity(0)));
+  // ROS_INFO("next_target : ( %lf , %lf , %lf)", next_target.x, next_target.y,next_target.z);
+
+  return outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)));
+
+// ROS_INFO("linear : %lf, angular : %lf",twist.twist.linear.x,twist.twist.angular.z);
 
 #ifdef LOG
   std::ofstream ofs("/tmp/pure_pursuit.log", std::ios::app);
-  ofs << current_waypoints_.getWaypointPosition(next_waypoint).x << " "
-      << current_waypoints_.getWaypointPosition(next_waypoint).y << " " << next_target.x << " " << next_target.y
+  ofs << _current_waypoints.getWaypointPosition(next_waypoint).x << " "
+      << _current_waypoints.getWaypointPosition(next_waypoint).y << " " << next_target.x << " " << next_target.y
       << std::endl;
 #endif
 }
