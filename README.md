@@ -16,7 +16,7 @@ Please use **one** of the two installation options, either native **or** docker 
 
 | Name              | Location      | LinkedIn                                                |                                               |
 | ----------------- | ------------- | ------------------------------------------------------- | --------------------------------------------- |
-| Andres Ruiz       | Spain         |https://www.linkedin.com/in/andres-ruiz-de-elvira-51153114/| < img src="imgs/AndresRuiz.png" width="250" /> |                                              |
+| Andres Ruiz       | Spain         |https://www.linkedin.com/in/andres-ruiz-de-elvira-51153114/| <img src="imgs/AndresRuiz.png" width="250"/> |                                              |
 | Quentin Wasselez  | France/UK     | https://www.linkedin.com/in/quentinw/                   | <img src="imgs/quentinw.jpg" width="250"/>    |
 | Mohammad Alsharif | Germany       | www.linkedin.com/in/dr-mohammad-alsharif-5a793737       | <img src="imgs/drmohammad.jpg" width="250"/>  |
 | Fengyu Chen       | Germany/China | https://www.linkedin.com/in/fengyu-chen-the-crazy-fish/ | <img src="imgs/fengyuchen.jpg" width="250" /> |
