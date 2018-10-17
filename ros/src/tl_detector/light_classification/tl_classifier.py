@@ -19,7 +19,7 @@ def __init__(self, simulation):
         if self.simulation is True:
             self.checkpoint = working_dir + '/model/simulator_coco_ssd_frozen_inference_graph.pb'
         else:
-            self.checkpoint = working_dir + '/model/frozen_inference_graph.pb'
+            self.checkpoint = working_dir + '/model/real_world__coco_ssd_inference_graph.pb'
 
         # Create a label dictionary
         item_green = {'id': 1, 'name': u'traffic_light-green'}
