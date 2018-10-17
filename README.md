@@ -1,7 +1,27 @@
-For MadridTeam
+## Self-Driving Car Nanodegree Capstone Project
+
+<img src="imgs/Udacity.gif"/>
+
+
+
 This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
 
 Please use **one** of the two installation options, either native **or** docker installation.
+
+
+
+### Team Members
+
+<img src="imgs/Madrid_Team.png"/>
+
+| Name              | Location      | LinkedIn                                                |                                               |
+| ----------------- | ------------- | ------------------------------------------------------- | --------------------------------------------- |
+| Andres Ruiz       | Spain         |                                                         |                                               |
+| Quentin Wasselez  | France/UK     | https://www.linkedin.com/in/quentinw/                   | <img src="imgs/quentinw.jpg" width="250"/>    |
+| Mohammad Alsharif | Germany       | www.linkedin.com/in/dr-mohammad-alsharif-5a793737       | <img src="imgs/drmohammad.jpg" width="250"/>  |
+| Fengyu Chen       | Germany/China | https://www.linkedin.com/in/fengyu-chen-the-crazy-fish/ | <img src="imgs/fengyuchen.jpg" width="250" /> |
+
+
 
 ### Native Installation
 
@@ -17,6 +37,7 @@ Please use **one** of the two installation options, either native **or** docker 
   * [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu) if you have Ubuntu 16.04.
   * [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu) if you have Ubuntu 14.04.
 * [Dataspeed DBW](https://bitbucket.org/DataspeedInc/dbw_mkz_ros)
+
   * Use this option to install the SDK on a workstation that already has ROS installed: [One Line SDK Install (binary)](https://bitbucket.org/DataspeedInc/dbw_mkz_ros/src/81e63fcc335d7b64139d7482017d6a97b405e250/ROS_SETUP.md?fileviewer=file-view-default)
 * Download the [Udacity Simulator](https://github.com/udacity/CarND-Capstone/releases).
 
