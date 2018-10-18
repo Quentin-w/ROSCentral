@@ -14,12 +14,39 @@ Please use **one** of the two installation options, either native **or** docker 
 
 <img src="imgs/Madrid_Team.png"/>
 
-| Name              | Location      | LinkedIn                                                |                                               |
-| ----------------- | ------------- | ------------------------------------------------------- | --------------------------------------------- |
-| Andres Ruiz       | Spain         |https://www.linkedin.com/in/andres-ruiz-de-elvira-51153114/| <img src="imgs/AndresRuiz.png" width="250"/> |                                              |
-| Quentin Wasselez  | France/UK     | https://www.linkedin.com/in/quentinw/                   | <img src="imgs/quentinw.jpg" width="250"/>    |
-| Mohammad Alsharif | Germany       | www.linkedin.com/in/dr-mohammad-alsharif-5a793737       | <img src="imgs/drmohammad.jpg" width="250"/>  |
-| Fengyu Chen       | Germany/China | https://www.linkedin.com/in/fengyu-chen-the-crazy-fish/ | <img src="imgs/fengyuchen.jpg" width="250" /> |
+| Name              | Location      | LinkedIn                                                    |                                               |
+| ----------------- | ------------- | ----------------------------------------------------------- | --------------------------------------------- |
+| Andres Ruiz       | Spain         | https://www.linkedin.com/in/andres-ruiz-de-elvira-51153114/ | <img src="imgs/AndresRuiz.png" width="250"/>  |
+| Quentin Wasselez  | France        | https://www.linkedin.com/in/quentinw/                       | <img src="imgs/quentinw.jpg" width="250"/>    |
+| Manish Kumar      | Germany       | https://www.linkedin.com/in/ranamanish/                     | <img src="imgs/manishk.jpg" width="250"/>     |
+| Mohammad Alsharif | Germany       | www.linkedin.com/in/dr-mohammad-alsharif-5a793737           | <img src="imgs/drmohammad.jpg" width="250"/>  |
+| Fengyu Chen       | Germany/China | https://www.linkedin.com/in/fengyu-chen-the-crazy-fish/     | <img src="imgs/fengyuchen.jpg" width="250" /> |
+
+
+
+### Autonomous Vehicle specifications
+
+Udacity engineers has been evaluating our project on Carla, an autonomous Lincoln MKZ, at their test site in Palo Alto, California. 
+
+<img src="imgs/carla.jpg" width="500" />
+
+
+
+Here was Carla's hardware specifications Udacity Self-Driving Car Hardware Specs
+
+- 31.4 GiB Memory
+- Intel Core i7-6700K CPU @ 4 GHz x 8
+- TITAN X Graphics
+- 64-bit OS
+- Tensorflow 3.0
+
+
+
+### System architecture 
+
+Here is the full system architecture of our implementation under ROS
+
+<img src="imgs/rosarchitecture.png" width="700" />
 
 
 
