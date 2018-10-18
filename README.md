@@ -8,11 +8,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 Please use **one** of the two installation options, either native **or** docker installation.
 
-
-
-### Team Members
-
-<img src="imgs/Madrid_Team.png"/>
+<img src="imgs/Madrid_Team.png" width="600"/>
 
 | Name              | Location      | LinkedIn                                                    |                                               |
 | ----------------- | ------------- | ----------------------------------------------------------- | --------------------------------------------- |
@@ -28,11 +24,7 @@ Please use **one** of the two installation options, either native **or** docker 
 
 Udacity engineers has been evaluating our project on Carla, an autonomous Lincoln MKZ, at their test site in Palo Alto, California. 
 
-<img src="imgs/carla.jpg" width="500" />
-
-
-
-Here was Carla's hardware specifications Udacity Self-Driving Car Hardware Specs
+Here was Carla's hardware specifications Udacity Self-Driving Car Hardware Specs:
 
 - 31.4 GiB Memory
 - Intel Core i7-6700K CPU @ 4 GHz x 8
@@ -47,8 +39,6 @@ Here was Carla's hardware specifications Udacity Self-Driving Car Hardware Specs
 Here is the full system architecture of our implementation under ROS
 
 <img src="imgs/rosarchitecture.png" width="700" />
-
-
 
 ### Native Installation
 
