@@ -1,6 +1,10 @@
 *.py[cod]
 
-build
-devel
+ros/build
+ros/devel
 
 profile.tmp
+
+#Root dir
+data
+imgs
