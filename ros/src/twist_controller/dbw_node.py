@@ -62,7 +62,7 @@ class DBWNode(object):
 
         self.throttle = self.brake = self.steering = 0.
 
-        self.rate = 10
+        self.rate = rospy.get_param('~update_rate')
 
         self.controller = Controller(vehicle_mass=vehicle_mass,
                                      fuel_capacity=fuel_capacity,

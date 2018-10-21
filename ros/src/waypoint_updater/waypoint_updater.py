@@ -24,7 +24,7 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 100  # Number of waypoints we will publish. You can change this number
+LOOKAHEAD_WPS = 50  # Number of waypoints we will publish. You can change this number
 MAX_DECEL = 1.0
 
 class WaypointUpdater(object):
@@ -54,10 +54,10 @@ class WaypointUpdater(object):
         self.loop()
 
     def loop(self):
-        # publish next waypoints every 50 ms TODO 
+        # publish next waypoints according to the update rate in styx.launch
 
         # define the frequency of publish
-        execution_freq = rospy.Rate(30)  # TODO 
+        execution_freq = rospy.Rate(rospy.get_param('~update_rate'))  
 
         # check if roscore is still active
         while not rospy.is_shutdown():

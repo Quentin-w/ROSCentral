@@ -1,4 +1,5 @@
 *.py[cod]
+*.csv
 
 ros/build
 ros/devel
