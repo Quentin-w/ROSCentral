@@ -21,6 +21,6 @@
     <!--Traffic Light Locations and Camera Config -->
     <param name="traffic_light_config" textfile="$(find tl_detector)/sim_traffic_light_config.yaml" />
 
-    <!--Update Rate of controller and wp updater-->
-    <param name="update_rate" value="10" />
+    <!--Update Rate of controller and wp updater. The param is included in each sub-launch file-->
+    <!--param name="update_rate" value="10" /-->
 </launch>
